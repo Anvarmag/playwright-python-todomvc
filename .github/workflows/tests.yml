@@ -2,9 +2,18 @@ name: e2e-tests
 
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
   pull_request:
-    branches: ['main']
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   tests:
@@ -17,7 +26,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
@@ -28,11 +37,12 @@ jobs:
         run: |
           playwright install --with-deps
 
-      - name: Run tests
+      - name: Run tests and generate HTML report
         env:
-          PW_HEADLESS: '1'
+          PW_HEADLESS: "1"
         run: |
-          pytest
+          mkdir -p site
+          pytest --html=site/index.html --self-contained-html
 
       - name: Upload test artifacts
         if: always()
@@ -40,3 +50,19 @@ jobs:
         with:
           name: test-results
           path: test-results/
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: tests
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
