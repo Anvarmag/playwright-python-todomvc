@@ -10,4 +10,3 @@ def test_add_todo_item(page: Page) -> None:
     todo.open()
     todo.add_todo("Buy milk")
     todo.should_have_todo("Buy milk")
-

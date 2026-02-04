@@ -6,7 +6,6 @@ from pathlib import Path
 import pytest
 from playwright.sync_api import Browser, BrowserContext, Page, sync_playwright
 
-
 ARTIFACTS_DIR = Path("test-results")
 
 
@@ -39,7 +38,9 @@ def context(request: pytest.FixtureRequest, browser: Browser) -> BrowserContext:
     yield context
 
     # after test (teardown)
-    test_failed = request.node.rep_call.failed if hasattr(request.node, "rep_call") else False
+    test_failed = (
+        request.node.rep_call.failed if hasattr(request.node, "rep_call") else False
+    )
 
     if test_failed:
         trace_path = ARTIFACTS_DIR / f"{request.node.name}-trace.zip"
@@ -58,7 +59,9 @@ def page(request: pytest.FixtureRequest, context: BrowserContext) -> Page:
     page = context.new_page()
     yield page
 
-    test_failed = request.node.rep_call.failed if hasattr(request.node, "rep_call") else False
+    test_failed = (
+        request.node.rep_call.failed if hasattr(request.node, "rep_call") else False
+    )
     if test_failed:
         screenshot_path = ARTIFACTS_DIR / f"{request.node.name}-screenshot.png"
         page.screenshot(path=str(screenshot_path), full_page=True)

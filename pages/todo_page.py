@@ -23,8 +23,10 @@ class TodoPage:
 
     def open(self) -> None:
         self.page.goto(self.URL)
-        expect(self.page).to_have_url(re.compile(r"^https://demo\.playwright\.dev/todomvc/.*$"))
-       
+        expect(self.page).to_have_url(
+            re.compile(r"^https://demo\.playwright\.dev/todomvc/.*$")
+        )
+
     def add_todo(self, text: str) -> None:
         self.page.fill(self.NEW_TODO_INPUT, text)
         self.page.press(self.NEW_TODO_INPUT, "Enter")
