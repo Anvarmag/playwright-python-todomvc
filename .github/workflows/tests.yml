@@ -2,18 +2,9 @@ name: e2e-tests
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
   pull_request:
-    branches: ["main"]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+    branches: ['main']
 
 permissions:
   contents: read
@@ -35,7 +26,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
       - name: Install dependencies
         run: |
@@ -48,7 +39,7 @@ jobs:
 
       - name: Run tests and generate HTML report
         env:
-          PW_HEADLESS: "1"
+          PW_HEADLESS: '1'
         run: |
           mkdir -p site
           pytest --html=site/index.html --self-contained-html
